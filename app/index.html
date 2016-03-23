@@ -27,25 +27,37 @@
 
 <div class="container-fluid">
 
-  <!--Filter-->
-  <div>
-    <label for="filter">Filter:</label>
-    <input id="filter" type="text">
-  </div>
+  <div class="row">
 
-  <!--Filter List-->
-
-  <div class="list">
-    <ul>
-      <li></li>
-    </ul>
-  </div>
-
-  <!--Map-->
-  <div id="mapDiv">
+    <!--Filter-->
+    <div class="col-md-12">
+      <label for="filter">Filter:</label>
+      <input id="filter" type="text">
+    </div>
 
   </div>
 
+  <div class="row">
+    <div class="col-md-2">
+      <!--Filtered List-->
+
+      <div class="list">
+        <h2>Locations</h2>
+        <ul data-bind="foreach: locations">
+          <li data-bind="text: name"></li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="col-md-10">
+
+      <!--Map-->
+      <div id="mapDiv">
+
+      </div>
+
+    </div>
+  </div>
 </div>
 <!-- build:js scripts/vendor.js -->
 <!-- bower:js -->

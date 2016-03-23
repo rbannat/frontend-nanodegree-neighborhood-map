@@ -1,7 +1,12 @@
-var ViewModel = {
-  personName: 'Bob',
-  personAge: 123
+var ViewModel = function () {
+  var self = this;
+
+  self.locations = ko.observableArray([
+    {name: "Bungle"},
+    {name: "George"},
+    {name: "Zippy"}
+  ]);
 };
 
-ko.applyBindings(ViewModel);
+ko.applyBindings(new ViewModel());
 
