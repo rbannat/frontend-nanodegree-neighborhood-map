@@ -1,9 +1,22 @@
 var initialLocations = [
   {
-    name: 'Berlin, Germany'
+    name: 'TK Maxx, Alexanderplatz, Berlin, Germany'
   },
   {
-    name: 'London, England'
+    name: 'Weltzeituhr, Alexanderplatz, Berlin, Germany'
+  },
+  ,
+  {
+    name: 'Schendelpark, Berlin, Germany'
+  },
+  {
+    name: 'ONE80 Hostel, Berlin, Germany'
+  },
+  {
+    name: 'Kino International, Berlin, Germany'
+  },
+  {
+    name: 'Volkspark Friedrichshain, Berlin, Germany'
   }
 ];
 

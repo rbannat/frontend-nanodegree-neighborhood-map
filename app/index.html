@@ -34,14 +34,23 @@
   </div>
 </div>
 
-<!--Filtered List-->
+
 <div class="list panel">
-  <label for="filter">Filter:</label>
-  <input id="filter" type="text">
+
+  <!--Filter input-->
+  <form>
+    <div class="form-group">
+      <label for="filter">Filter:</label>
+      <input id="filter" type="text" placeholder="Filter location">
+    </div>
+  </form>
+
+  <!--Filtered List-->
   <h2>Locations</h2>
   <ul data-bind="foreach: locations">
     <li data-bind="text: name"></li>
   </ul>
+
 </div>
 
 <!-- build:js scripts/vendor.js -->
