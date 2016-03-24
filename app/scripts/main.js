@@ -5,7 +5,6 @@ var initialLocations = [
   {
     name: 'Weltzeituhr, Alexanderplatz, Berlin, Germany'
   },
-  ,
   {
     name: 'Schendelpark, Berlin, Germany'
   },
