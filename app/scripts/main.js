@@ -1,4 +1,4 @@
-var initialLocations = [
+var locations = [
   {
     name: 'TK Maxx, Alexanderplatz, Berlin, Germany'
   },
@@ -26,14 +26,21 @@ var Location = function (data) {
 var ViewModel = function () {
   var self = this;
 
-  self.locations = ko.observableArray([]);
+  self.filterValue = ko.observable('');
 
-  initialLocations.forEach(function (location) {
-    self.locations.push(new Location(location));
+  // populate initial locations
+  self.initialLocations = [];
+
+  locations.forEach(function (location) {
+    self.initialLocations.push(new Location(location));
   });
 
-
-  //filteredLocations
+  // filtered locations computed observable array
+  self.filteredLocations = ko.computed(function () {
+    return self.initialLocations.filter(function (value) {
+      return value.name.toLowerCase().indexOf(self.filterValue().toLowerCase()) > -1;
+    })
+  });
 
 
 };
@@ -74,13 +81,15 @@ function initializeMap() {
     // The next lines save location data from the search result object to local variables
     var lat = placeData.geometry.location.lat();  // latitude from the place service
     var lon = placeData.geometry.location.lng();  // longitude from the place service
-    var name = placeData.formatted_address;   // name of the place from the place service
+    var address = placeData.formatted_address;   // name of the place from the place service
+    var name = placeData.name;   // name of the place from the place service
     var bounds = window.mapBounds;            // current boundaries of the map window
 
     // marker is an object with additional data about the pin for a single location
     var marker = new google.maps.Marker({
       map: map,
       position: placeData.geometry.location,
+      animation: google.maps.Animation.DROP,
       title: name
     });
 
@@ -91,10 +100,17 @@ function initializeMap() {
       content: name
     });
 
-    // hmmmm, I wonder what this is about...
     google.maps.event.addListener(marker, 'click', function () {
-      // your code goes here!
+      infoWindow.open(map, marker);
+      bounce();
     });
+
+    function bounce() {
+      marker.setAnimation(google.maps.Animation.BOUNCE);
+      setTimeout(function () {
+        marker.setAnimation(null);
+      }, 740);
+    }
 
     // this is where the pin actually gets added to the map.
     // bounds.extend() takes in a map location object
@@ -145,13 +161,9 @@ function initializeMap() {
 
   // pinPoster(locations) creates pins on the map for each location in
   // the locations array
-  pinPoster(initialLocations);
+  pinPoster(locations);
 
 }
-
-/*
- Uncomment the code below when you're ready to implement a Google Map!
- */
 
 // Calls the initializeMap() function when the page loads
 window.addEventListener('load', initializeMap);

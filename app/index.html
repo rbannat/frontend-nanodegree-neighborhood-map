@@ -41,13 +41,13 @@
   <form>
     <div class="form-group">
       <label for="filter">Filter:</label>
-      <input id="filter" type="text" placeholder="Filter location">
+      <input id="filter" type="text" placeholder="Filter location" data-bind="textInput: filterValue">
     </div>
   </form>
 
   <!--Filtered List-->
   <h2>Locations</h2>
-  <ul data-bind="foreach: locations">
+  <ul data-bind="foreach: filteredLocations">
     <li data-bind="text: name"></li>
   </ul>
 
