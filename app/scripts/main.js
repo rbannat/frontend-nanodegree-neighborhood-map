@@ -1,3 +1,5 @@
+'use strict';
+
 var locations = [
   {
     name: 'TK Maxx, Alexanderplatz, Berlin, Germany'
@@ -39,7 +41,7 @@ var ViewModel = function () {
   self.filteredLocations = ko.computed(function () {
     return self.initialLocations.filter(function (value) {
       return value.name.toLowerCase().indexOf(self.filterValue().toLowerCase()) > -1;
-    })
+    });
   });
 
   // filtered markers
@@ -50,7 +52,7 @@ var ViewModel = function () {
     self.filteredMarkers = function () {
       return markers.filter(function (value) {
         return value.title.toLowerCase().indexOf(newValue.toLowerCase()) > -1;
-      })
+      });
     };
 
    markers.forEach(function(marker){
@@ -101,7 +103,6 @@ function initializeMap() {
     // The next lines save location data from the search result object to local variables
     var lat = placeData.geometry.location.lat();  // latitude from the place service
     var lon = placeData.geometry.location.lng();  // longitude from the place service
-    var address = placeData.formatted_address;   // name of the place from the place service
     var name = placeData.name;   // name of the place from the place service
     var bounds = window.mapBounds;            // current boundaries of the map window
 
@@ -148,7 +149,7 @@ function initializeMap() {
    If so, it creates a new map marker for that location.
    */
   function callback(results, status) {
-    if (status == google.maps.places.PlacesServiceStatus.OK) {
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
       createMapMarker(results[0]);
     } else {
       console.log('no results');
