@@ -2,27 +2,52 @@
 
 var locations = [
   {
-    name: 'TK Maxx, Alexanderplatz, Berlin, Germany'
+    name: 'TK Maxx, Alexanderplatz, Berlin, Germany',
+    position: {
+      lat: 52.52070279999999,
+      lng: 13.411023699999987
+    }
   },
   {
-    name: 'Weltzeituhr, Alexanderplatz, Berlin, Germany'
+    name: 'Weltzeituhr, Alexanderplatz, Berlin, Germany',
+    position: {
+      lat: 52.5211666,
+      lng: 13.413308499999971
+    }
   },
   {
-    name: 'Schendelpark, Berlin, Germany'
+    name: 'Schendelpark, Berlin, Germany',
+    position: {
+      lat: 52.52750959999999,
+      lng: 13.408813499999951
+    }
   },
   {
-    name: 'ONE80 Hostel, Berlin, Germany'
+    name: 'ONE80 Hostel, Berlin, Germany',
+    position: {
+      lat: 52.523929,
+      lng: 13.417916999999989
+    }
   },
   {
-    name: 'Kino International, Berlin, Germany'
+    name: 'Kino International, Berlin, Germany',
+    position: {
+      lat: 52.52066199999999,
+      lng: 13.423149899999999
+    }
   },
   {
-    name: 'Volkspark Friedrichshain, Berlin, Germany'
+    name: 'Volkspark Friedrichshain, Berlin, Germany',
+    position: {
+      lat: 52.5280353,
+      lng: 13.436393400000043
+    }
   }
 ];
 
 var Location = function (data) {
   this.name = data.name;
+  this.position = data.position;
 };
 
 var ViewModel = function () {
@@ -45,21 +70,19 @@ var ViewModel = function () {
   });
 
   // filtered markers
-  self.filteredMarkers = [];
-
   self.filterValue.subscribe(function (newValue) {
     self.filteredMarkers = [];
     self.filteredMarkers = function () {
-      return markers.filter(function (value) {
-        return value.title.toLowerCase().indexOf(newValue.toLowerCase()) > -1;
+      return markers.filter(function (marker) {
+        return marker.title.toLowerCase().indexOf(newValue.toLowerCase()) > -1;
       });
     };
 
-   markers.forEach(function(marker){
+    markers.forEach(function (marker) {
       marker.setMap(null);
     });
 
-    self.filteredMarkers().forEach(function(marker){
+    self.filteredMarkers().forEach(function (marker) {
       marker.setMap(map);
     });
   });
@@ -98,18 +121,18 @@ function initializeMap() {
    placeData is the object returned from search results containing information
    about a single location.
    */
-  function createMapMarker(placeData) {
+  function createMapMarker(location) {
 
     // The next lines save location data from the search result object to local variables
-    var lat = placeData.geometry.location.lat();  // latitude from the place service
-    var lon = placeData.geometry.location.lng();  // longitude from the place service
-    var name = placeData.name;   // name of the place from the place service
+    var lat = location.position.lat;  // latitude from the place service
+    var lng = location.position.lng;  // longitude from the place service
+    var name = location.name;   // name of the place from the place service
     var bounds = window.mapBounds;            // current boundaries of the map window
 
     // marker is an object with additional data about the pin for a single location
     var marker = new google.maps.Marker({
       map: map,
-      position: placeData.geometry.location,
+      position: location.position,
       animation: google.maps.Animation.DROP,
       title: name
     });
@@ -137,7 +160,7 @@ function initializeMap() {
 
     // this is where the pin actually gets added to the map.
     // bounds.extend() takes in a map location object
-    bounds.extend(new google.maps.LatLng(lat, lon));
+    bounds.extend(new google.maps.LatLng(lat, lng));
     // fit the map to the new marker
     map.fitBounds(bounds);
     // center the map
@@ -162,20 +185,9 @@ function initializeMap() {
    */
   function pinPoster(locations) {
 
-    // creates a Google place search service object. PlacesService does the work of
-    // actually searching for location data.
-    var service = new google.maps.places.PlacesService(map);
-
     // Iterates through the array of locations, creates a search object for each location
-    locations.forEach(function (place) {
-      // the search request object
-      var request = {
-        query: place.name
-      };
-
-      // Actually searches the Google Maps API for location data and runs the callback
-      // function with the search results after each search.
-      service.textSearch(request, callback);
+    locations.forEach(function (location) {
+      createMapMarker(location);
     });
   }
 
