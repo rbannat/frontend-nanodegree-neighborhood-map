@@ -42,6 +42,26 @@ var ViewModel = function () {
     })
   });
 
+  // filtered markers
+  self.filteredMarkers = [];
+
+  self.filterValue.subscribe(function (newValue) {
+    self.filteredMarkers = [];
+    self.filteredMarkers = function () {
+      return markers.filter(function (value) {
+        return value.title.toLowerCase().indexOf(newValue.toLowerCase()) > -1;
+      })
+    };
+
+   markers.forEach(function(marker){
+      marker.setMap(null);
+    });
+
+    self.filteredMarkers().forEach(function(marker){
+      marker.setMap(map);
+    });
+  });
+
 
 };
 
@@ -53,7 +73,7 @@ ko.applyBindings(new ViewModel());
  https://developers.google.com/maps/documentation/javascript/reference
  */
 var map;    // declares a global map variable
-
+var markers = [];
 
 /*
  Start here! initializeMap() is called when page is loaded.
@@ -104,6 +124,8 @@ function initializeMap() {
       infoWindow.open(map, marker);
       bounce();
     });
+
+    markers.push(marker);
 
     function bounce() {
       marker.setAnimation(google.maps.Animation.BOUNCE);
