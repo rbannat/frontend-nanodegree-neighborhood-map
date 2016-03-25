@@ -87,6 +87,23 @@ var ViewModel = function () {
     });
   });
 
+  self.showMarkerWindow = function (data) {
+    var showedMarker = markers.find(function (marker) {
+      return marker.title === data.name;
+    });
+    if (lastActiveWindow) {
+      lastActiveWindow.close();
+    }
+    lastActiveWindow = showedMarker.infoWindow;
+
+    showedMarker.setAnimation(google.maps.Animation.BOUNCE);
+    setTimeout(function () {
+      showedMarker.setAnimation(null);
+    }, 740);
+    showedMarker.infoWindow.open(map, showedMarker);
+
+  }
+
 
 };
 
@@ -99,6 +116,7 @@ ko.applyBindings(new ViewModel());
  */
 var map;    // declares a global map variable
 var markers = [];
+var lastActiveWindow = null;
 
 /*
  Start here! initializeMap() is called when page is loaded.
@@ -111,15 +129,12 @@ function initializeMap() {
 
   /*
    For the map to be displayed, the googleMap var must be
-   appended to #mapDiv in resumeBuilder.js.
+   appended to #mapDiv
    */
   map = new google.maps.Map(document.querySelector('#map'), mapOptions);
 
-
   /*
-   createMapMarker(placeData) reads Google Places search results to create map pins.
-   placeData is the object returned from search results containing information
-   about a single location.
+   createMapMarker(location) creates map pins by given location data
    */
   function createMapMarker(location) {
 
@@ -137,18 +152,20 @@ function initializeMap() {
       title: name
     });
 
-    // infoWindows are the little helper windows that open when you click
-    // or hover over a pin on a map. They usually contain more information
-    // about a location.
     var infoWindow = new google.maps.InfoWindow({
       content: name
     });
 
     google.maps.event.addListener(marker, 'click', function () {
+      if (lastActiveWindow) {
+        lastActiveWindow.close();
+      }
+      lastActiveWindow = infoWindow;
       infoWindow.open(map, marker);
       bounce();
     });
 
+    marker.infoWindow = infoWindow;
     markers.push(marker);
 
     function bounce() {
@@ -165,18 +182,6 @@ function initializeMap() {
     map.fitBounds(bounds);
     // center the map
     map.setCenter(bounds.getCenter());
-  }
-
-  /*
-   callback(results, status) makes sure the search returned results for a location.
-   If so, it creates a new map marker for that location.
-   */
-  function callback(results, status) {
-    if (status === google.maps.places.PlacesServiceStatus.OK) {
-      createMapMarker(results[0]);
-    } else {
-      console.log('no results');
-    }
   }
 
   /*

@@ -48,7 +48,7 @@
   <!--Filtered List-->
   <h2>Locations</h2>
   <ul data-bind="foreach: filteredLocations">
-    <li data-bind="text: name"></li>
+    <li data-bind="text: name, event: {click: $root.showMarkerWindow}"></li>
   </ul>
 
 </div>
