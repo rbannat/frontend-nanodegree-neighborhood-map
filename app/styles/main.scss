@@ -109,6 +109,9 @@ body {
       padding: 10px;
       cursor: pointer;
 
+      &.active {
+        background: #333;
+      }
       &:hover,
       &:focus {
         color: #000;

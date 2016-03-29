@@ -87,7 +87,17 @@ var ViewModel = function () {
     });
   });
 
+  //current location
+  self.currentLocation = ko.observable();
+
+  /*
+  * function for showing marker by clicked list item
+  * */
   self.showMarkerWindow = function (data) {
+
+    //set current active location
+    self.currentLocation(this);
+
     var showedMarker = markers.find(function (marker) {
       return marker.title === data.name;
     });
