@@ -112,11 +112,11 @@ var ViewModel = function () {
     }, 740);
     showedMarker.infoWindow.open(map, showedMarker);
 
-  }
+  };
 
   self.toggleNav = function(){
     $('body').toggleClass('open');
-  }
+  };
 
 
 };
