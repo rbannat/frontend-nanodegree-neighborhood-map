@@ -91,8 +91,8 @@ var ViewModel = function () {
   self.currentLocation = ko.observable();
 
   /*
-  * function for showing marker by clicked list item
-  * */
+   * function for showing marker by clicked list item
+   * */
   self.showMarkerWindow = function (data) {
 
     //set current active location
@@ -112,6 +112,10 @@ var ViewModel = function () {
     }, 740);
     showedMarker.infoWindow.open(map, showedMarker);
 
+  }
+
+  self.toggleNav = function(){
+    $('body').toggleClass('open');
   }
 
 
@@ -163,7 +167,7 @@ function initializeMap() {
     });
 
     var infoWindow = new google.maps.InfoWindow({
-      content: name
+      content: '<h3>' + name + '</h3>'
     });
 
     google.maps.event.addListener(marker, 'click', function () {
@@ -177,6 +181,22 @@ function initializeMap() {
 
     marker.infoWindow = infoWindow;
     markers.push(marker);
+
+    var maxVenues = 5;
+    var foursquareUrl = 'https://api.foursquare.com/v2/venues/search?ll=' + lat + ',' + lng +
+      '&client_id=R0UOFDICLTRD2XWTVOC2J2BRZPEZA1ASO2RZAOE3PGXVMA4H&client_secret=Z4IZVEOJR1GHPDJSE1EMG0V43ABQWEI3B5OXRNYG2UFRKIRS&v=20160329';
+    $.getJSON(foursquareUrl, function (data) {
+      var contentString = '<h3>' + name + '</h3><h4>Locations nearby:</h4>';
+      for (var i = 0; i <= maxVenues; i++) {
+        contentString +=
+          '<div><span class="fs-name">' + data.response.venues[i].name +
+          ', </span><span class="fs-herenow">Here now: ' +
+          data.response.venues[i].hereNow.count + '</span></div>';
+      }
+      marker.infoWindow.setContent(contentString);
+    }).error(function (e) {
+      marker.infoWindow.setContent('<h3>' + name + '</h3> <div>Failed to load nearby locations</div>');
+    });
 
     function bounce() {
       marker.setAnimation(google.maps.Animation.BOUNCE);
