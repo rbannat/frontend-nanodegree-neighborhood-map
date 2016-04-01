@@ -75,8 +75,6 @@ var ViewModel = function () {
 
   self.isError = ko.observable(false);
 
-
-  if (typeof google != 'undefined') {
     // filtered markers
     self.filterValue.subscribe(function (newValue) {
       self.filteredMarkers = [];
@@ -95,7 +93,6 @@ var ViewModel = function () {
       });
     });
 
-
     /*
      * function for showing marker by clicked list item
      * */
@@ -112,9 +109,6 @@ var ViewModel = function () {
       google.maps.event.trigger(showedMarker, 'click');
 
     };
-  } else {
-    self.isError(true);
-  }
 
   //toggle menu
   self.isMenuOpen = ko.observable(false);
