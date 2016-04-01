@@ -70,43 +70,51 @@ var ViewModel = function () {
     });
   });
 
-  // filtered markers
-  self.filterValue.subscribe(function (newValue) {
-    self.filteredMarkers = [];
-    self.filteredMarkers = function () {
-      return markers.filter(function (marker) {
-        return marker.title.toLowerCase().indexOf(newValue.toLowerCase()) > -1;
-      });
-    };
-
-    markers.forEach(function (marker) {
-      marker.setVisible(false);
-    });
-
-    self.filteredMarkers().forEach(function (marker) {
-      marker.setVisible(true);
-    });
-  });
-
   //current location
   self.currentLocation = ko.observable();
 
-  /*
-   * function for showing marker by clicked list item
-   * */
-  self.showMarkerWindow = function (data) {
+  self.isError = ko.observable(false);
 
-    //set current active location
-    self.currentLocation(this);
 
-    var showedMarker = markers.find(function (marker) {
-      return marker.title === data.name;
+  if (typeof google != 'undefined') {
+    // filtered markers
+    self.filterValue.subscribe(function (newValue) {
+      self.filteredMarkers = [];
+      self.filteredMarkers = function () {
+        return markers.filter(function (marker) {
+          return marker.title.toLowerCase().indexOf(newValue.toLowerCase()) > -1;
+        });
+      };
+
+      markers.forEach(function (marker) {
+        marker.setVisible(false);
+      });
+
+      self.filteredMarkers().forEach(function (marker) {
+        marker.setVisible(true);
+      });
     });
 
-    //trigger click event of marker
-    google.maps.event.trigger(showedMarker, 'click');
 
-  };
+    /*
+     * function for showing marker by clicked list item
+     * */
+    self.showMarkerWindow = function (data) {
+
+      //set current active location
+      self.currentLocation(this);
+
+      var showedMarker = markers.find(function (marker) {
+        return marker.title === data.name;
+      });
+
+      //trigger click event of marker
+      google.maps.event.trigger(showedMarker, 'click');
+
+    };
+  } else {
+    self.isError(true);
+  }
 
   //toggle menu
   self.isMenuOpen = ko.observable(false);
@@ -114,10 +122,8 @@ var ViewModel = function () {
     self.isMenuOpen(!self.isMenuOpen());
   };
 
-
 };
 
-ko.applyBindings(new ViewModel());
 
 /*
  This is the fun part. Here's where we generate the custom Google Map for the website.
@@ -192,7 +198,7 @@ function initializeMap() {
       }
       marker.infoWindow.setContent(contentString);
     }).error(function (e) {
-      marker.infoWindow.setContent('<h3>' + name + '</h3> <div>Failed to load nearby locations</div>');
+      marker.infoWindow.setContent('<h3>' + name + '</h3><div>Failed to load nearby locations</div>');
     });
 
     function bounce() {
@@ -232,14 +238,23 @@ function initializeMap() {
 
 }
 
-// Calls the initializeMap() function when the page loads
-window.addEventListener('load', initializeMap);
-
 // Vanilla JS way to listen for resizing of the window
 // and adjust map bounds
 window.addEventListener('resize', function (e) {
   //Make sure the map bounds get updated on page resize
   map.fitBounds(mapBounds);
 });
+
+
+// error callback if map is not loaded
+function googleError() {
+  console.log('error');
+  vm.isError(true);
+}
+
+var vm = new ViewModel();
+ko.applyBindings(vm);
+
+
 
 
