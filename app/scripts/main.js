@@ -48,6 +48,7 @@ var locations = [
 var Location = function (data) {
   this.name = data.name;
   this.position = data.position;
+  this.marker = null;
 };
 
 var ViewModel = function () {
@@ -79,11 +80,11 @@ var ViewModel = function () {
     };
 
     markers.forEach(function (marker) {
-      marker.setMap(null);
+      marker.setVisible(false);
     });
 
     self.filteredMarkers().forEach(function (marker) {
-      marker.setMap(map);
+      marker.setVisible(true);
     });
   });
 
@@ -101,21 +102,16 @@ var ViewModel = function () {
     var showedMarker = markers.find(function (marker) {
       return marker.title === data.name;
     });
-    if (lastActiveWindow) {
-      lastActiveWindow.close();
-    }
-    lastActiveWindow = showedMarker.infoWindow;
 
-    showedMarker.setAnimation(google.maps.Animation.BOUNCE);
-    setTimeout(function () {
-      showedMarker.setAnimation(null);
-    }, 740);
-    showedMarker.infoWindow.open(map, showedMarker);
+    //trigger click event of marker
+    google.maps.event.trigger(showedMarker, 'click');
 
   };
 
-  self.toggleNav = function(){
-    $('body').toggleClass('open');
+  //toggle menu
+  self.isMenuOpen = ko.observable(false);
+  self.toggleNav = function () {
+    self.isMenuOpen(!self.isMenuOpen());
   };
 
 
@@ -128,9 +124,9 @@ ko.applyBindings(new ViewModel());
  See the documentation below for more details.
  https://developers.google.com/maps/documentation/javascript/reference
  */
-var map;    // declares a global map variable
-var markers = [];
-var lastActiveWindow = null;
+var map,    // declares a global map variable
+  markers = [],
+  lastActiveWindow = null;
 
 /*
  Start here! initializeMap() is called when page is loaded.
@@ -176,6 +172,7 @@ function initializeMap() {
       }
       lastActiveWindow = infoWindow;
       infoWindow.open(map, marker);
+      map.panTo(marker.getPosition());
       bounce();
     });
 
